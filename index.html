@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LFA Reader</title>
+    <style>
+        
+        :root {
+            --red: #D53E49;
+            --blue: #65A1B7;
+            --green: #D4AD00;
+            --shadow: rgba(0, 0, 0, 0.2);
+        }
+
+        body {
+            background-color: #F5F5F5;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 30px;
+            margin: 40px auto;
+            padding: 0 20px;
+            max-width: 1200px;
+        }
+
+        .title {
+            font-size: 34px;
+            font-weight: bold;
+            text-align: center;
+            color: #333;
+            background-color: #FFF;
+            box-shadow: 0 4px 10px var(--shadow);
+            border-radius: 12px;
+            padding: 15px 25px;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        /* DETECTED COLOR BOX */
+        .detected-color-container {
+            background-color: #FFF;
+            box-shadow: 0 4px 10px var(--shadow);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+            max-width: 600px;
+        }
+
+        #intensity-container {
+            background-color: #555;
+            color: white;
+            padding: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
+            box-shadow: 0 6px 15px var(--shadow);
+        }
+
+        #lux {
+            font-size: 18px;
+            color: #555;
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        /* DATA BOXES */
+        .data-boxes {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .box {
+            background-color: #FFF;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px var(--shadow);
+            text-align: center;
+            padding: 25px;
+            width: 150px;
+            flex: 1 1 calc(33.33% - 20px);
+            max-width: 200px;
+            box-sizing: border-box;
+        }
+
+        .box-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+        }
+
+        .box p {
+            margin: 0;
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* COLORS */
+        .red { background-color: var(--red); }
+        .blue { background-color: var(--blue); }
+        .green { background-color: var(--green); }
+
+        hr {
+            border: none;
+            height: 4px;
+            margin-top: 10px;
+            border-radius: 5px;
+        }
+
+        .red-line { background-color: var(--red); }
+        .blue-line { background-color: var(--blue); }
+        .green-line { background-color: var(--green); }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            *{
+            margin: 0 10px;
+            }
+            .title {
+                font-size: 28px;
+                padding: 10px 20px;
+            }
+
+            #intensity-container {
+                font-size: 20px;
+            }
+
+            #lux {
+                font-size: 16px;
+            }
+
+            .box {
+                flex: 1 1 100%;
+                max-width: none;
+            }
+
+            .data-boxes {
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            *{
+            margin: 0 10px;
+            }
+            .title {
+                font-size: 24px;
+                padding: 10px 15px;
+            }
+
+            #intensity-container {
+                font-size: 18px;
+            }
+
+            #lux {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Title -->
+        <div class="title">LFA Reader</div>
+
+        <!-- Detected Color -->
+        <div class="detected-color-container">
+            <div style="font-weight: bold; font-size: 20px;">DETECTED COLOR</div>
+            <div id="detected-color" style="font-size: 22px;">"INDEFINIDO"</div>
+        </div>
+
+        <!-- Intensity -->
+        <div id="intensity-container">INTENSIDAD: 0</div>
+        <div id="lux">LUX: 0</div>
+
+        <!-- Data Boxes -->
+        <div class="data-boxes">
+            <div class="box">
+                <div class="box-circle red"></div>
+                <p>RED</p>
+                <p id="Red">0</p>
+                <hr class="red-line">
+            </div>
+            <div class="box">
+                <div class="box-circle green"></div>
+                <p>GREEN</p>
+                <p id="Green">0</p>
+                <hr class="green-line">
+            </div>
+            <div class="box">
+                <div class="box-circle blue"></div>
+                <p>BLUE</p>
+                <p id="Blue">0</p>
+                <hr class="blue-line">
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-database.js"></script>
+    <script>
+        // Configuración de Firebase
+        const firebaseConfig = {
+        apiKey: "AIzaSyDb0MNZx7DZM_u9fz9VYad5EptkVdnK2YQ",
+        authDomain: "lfar-cb399.firebaseapp.com",
+        databaseURL: "https://lfar-cb399-default-rtdb.firebaseio.com",
+        projectId: "lfar-cb399",
+        storageBucket: "lfar-cb399.firebasestorage.app",
+        messagingSenderId: "140652099318",
+        appId: "1:140652099318:web:c1f4342562b05398e51ed7",
+        measurementId: "G-77T2SHFNPG"
+};
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    
+        // Actualizar valores dinámicamente con prefijo
+        function updateValue(refName, elementId, prefix = "") {
+            const dataRef = database.ref(`LFAR/${refName}`);
+            dataRef.on('value', function(snapshot) {
+                const value = snapshot.val();
+                document.getElementById(elementId).innerHTML = prefix + value;
+            });
+        }
+    
+        // Actualizaciones de Red, Azul, Verde
+        updateValue("Rojo", "Red");
+        updateValue("Azul", "Blue");
+        updateValue("Verde", "Green");
+    
+        // Actualizar Detected Color, Intensidad y Lux
+        const detectedColorRef = database.ref("LFAR/Color_detectado");
+        detectedColorRef.on('value', function(snapshot) {
+            const color = snapshot.val();
+            const detectedColorText = document.getElementById('detected-color');
+            const detectedColorContainer = document.querySelector('.detected-color-container');
+            const intensityContainer = document.getElementById('intensity-container');
+            const luxElement = document.getElementById('lux');
+    
+            // Actualizar el color detectado
+            detectedColorText.innerHTML = `"${color.toUpperCase()}"`;
+    
+            // Colores dinámicos según el valor detectado
+            if (color === 'Rojo') {
+                intensityContainer.style.backgroundColor = 'var(--red)';
+                luxElement.style.color = 'var(--red)';
+                detectedColorText.style.color = 'var(--red)';
+                detectedColorContainer.style.color = 'var(--red)'; // Color del título y contenido
+            } else if (color === 'Azul') {
+                intensityContainer.style.backgroundColor = 'var(--blue)';
+                luxElement.style.color = 'var(--blue)';
+                detectedColorText.style.color = 'var(--blue)';
+                detectedColorContainer.style.color = 'var(--blue)';
+            } else if (color === 'Verde') {
+                intensityContainer.style.backgroundColor = 'var(--green)';
+                luxElement.style.color = 'var(--green)';
+                detectedColorText.style.color = 'var(--green)';
+                detectedColorContainer.style.color = 'var(--green)';
+            } else {
+                // Color indefinido: gris oscuro
+                intensityContainer.style.backgroundColor = '#555'; // Fondo gris oscuro
+                luxElement.style.color = '#555'; // Texto gris oscuro
+                detectedColorText.style.color = '#555'; // Texto gris oscuro
+                detectedColorContainer.style.color = '#555'; // Toda la sección en gris oscuro
+            }
+        });
+    
+        updateValue("Lux", "lux", "LUX: ");
+        updateValue("Intensidad", "intensity-container", "INTENSIDAD: ");
+    </script>
+    
+    
+    
+</body>
+</html>
