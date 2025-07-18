@@ -70,6 +70,16 @@
             border-radius: var(--border-radius);
         }
 
+        .location-box {
+            background-color: #f1f1f1; /* Fondo gris claro */
+            padding: 20px;
+            font-size: 18px;
+            color: #333;
+            margin-top: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px var(--shadow-color);
+        }
+
         @media (max-width: 768px) {
             .box-container {
                 flex-direction: column;
@@ -112,6 +122,14 @@
                 <h3>Caída Detectada</h3>
                 <p id="fall-status">NO</p>
             </div>
+        </div>
+
+        <!-- Información de Ubicación -->
+        <div class="location-box">
+            <h3>Ubicación: UPC Monterrico</h3>
+            <p>Prolongación Primavera 2390, Santiago de Surco 15023</p>
+            <p>Latitud: -12.121013</p>
+            <p>Longitud: -76.983038</p>
         </div>
     </div>
 
