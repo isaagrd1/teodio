@@ -106,9 +106,8 @@
             color: #333;
         }
 
-        .red { background-color: var(--red); }
-        .blue { background-color: var(--blue); }
-        .green { background-color: var(--green); }
+        /* Colors for each axis */
+        .color-box { background-color: #888; }
 
         hr {
             border: none;
@@ -117,9 +116,8 @@
             border-radius: 5px;
         }
 
-        .red-line { background-color: var(--red); }
-        .blue-line { background-color: var(--blue); }
-        .green-line { background-color: var(--green); }
+        .color-line { background-color: #888; }
+
     </style>
 </head>
 <body>
@@ -128,30 +126,48 @@
 
         <div class="detected-color-container">
             <div style="font-weight: bold; font-size: 20px;">Estado de la Caída</div>
-            <div id="detected-color" style="font-size: 22px;">"INDEFINIDO"</div>
+            <div id="detected-color" style="font-size: 22px;">"SIN CAÍDA"</div>
         </div>
 
         <div id="intensity-container">INTENSIDAD: 0</div>
         <div id="lux">LUX: 0</div>
 
         <div class="data-boxes">
-            <div class="box">
-                <div class="box-circle red"></div>
-                <p>RED</p>
-                <p id="Red">0</p>
-                <hr class="red-line">
+            <div class="box color-box">
+                <div class="box-circle"></div>
+                <p>Accel X</p>
+                <p id="Accel_X">0</p>
+                <hr class="color-line">
             </div>
-            <div class="box">
-                <div class="box-circle green"></div>
-                <p>GREEN</p>
-                <p id="Green">0</p>
-                <hr class="green-line">
+            <div class="box color-box">
+                <div class="box-circle"></div>
+                <p>Accel Y</p>
+                <p id="Accel_Y">0</p>
+                <hr class="color-line">
             </div>
-            <div class="box">
-                <div class="box-circle blue"></div>
-                <p>BLUE</p>
-                <p id="Blue">0</p>
-                <hr class="blue-line">
+            <div class="box color-box">
+                <div class="box-circle"></div>
+                <p>Accel Z</p>
+                <p id="Accel_Z">0</p>
+                <hr class="color-line">
+            </div>
+            <div class="box color-box">
+                <div class="box-circle"></div>
+                <p>Gyro X</p>
+                <p id="Gyro_X">0</p>
+                <hr class="color-line">
+            </div>
+            <div class="box color-box">
+                <div class="box-circle"></div>
+                <p>Gyro Y</p>
+                <p id="Gyro_Y">0</p>
+                <hr class="color-line">
+            </div>
+            <div class="box color-box">
+                <div class="box-circle"></div>
+                <p>Gyro Z</p>
+                <p id="Gyro_Z">0</p>
+                <hr class="color-line">
             </div>
         </div>
     </div>
@@ -184,13 +200,21 @@
         }
 
         // Actualizaciones de Aceleración y Giroscopio
-        updateValue("DISe/Accel_X_g", "Red");
-        updateValue("DISe/Accel_Y_g", "Green");
-        updateValue("DISe/Accel_Z_g", "Blue");
+        updateValue("DISe/Accel_X_g", "Accel_X");
+        updateValue("DISe/Accel_Y_g", "Accel_Y");
+        updateValue("DISe/Accel_Z_g", "Accel_Z");
+
+        updateValue("DISe/Gyro_X_dps", "Gyro_X");
+        updateValue("DISe/Gyro_Y_dps", "Gyro_Y");
+        updateValue("DISe/Gyro_Z_dps", "Gyro_Z");
 
         // Actualizar Estado de Caída, Intensidad y Lux
         updateValue("DISe/CaidaDetectada", "detected-color", function(val) {
-            return val ? `"CAÍDA DETECTADA"` : `"SIN CAÍDA"`;
+            if(val) {
+                document.getElementById('detected-color').innerText = `"CAÍDA DETECTADA"`;
+            } else {
+                document.getElementById('detected-color').innerText = `"SIN CAÍDA"`;
+            }
         });
         updateValue("DISe/Gyro_X_dps", "intensity-container", "INTENSIDAD: ");
         updateValue("DISe/Accel_X_g", "lux", "LUX: ");
