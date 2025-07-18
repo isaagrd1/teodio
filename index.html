@@ -152,11 +152,18 @@
         updateValue("DISe/Gyro_Z_dps", "Gyro_Z", "Z: ");
 
         // Actualizar Estado de la Caída
-        updateValue("DISe/CaidaDetectada", "fall-status", function(val) {
-            if(val) {
-                document.getElementById('status-caida').innerText = "CAÍDA DETECTADA";
+        const fallRef = database.ref("DISe/CaidaDetectada");
+        fallRef.on('value', function(snapshot) {
+            const val = snapshot.val();
+            const fallStatus = document.getElementById('fall-status');
+            const statusBox = document.getElementById('status-caida');
+
+            if (val) {
+                fallStatus.innerText = "SI";
+                statusBox.innerText = "CAÍDA DETECTADA";
             } else {
-                document.getElementById('status-caida').innerText = "SIN CAÍDA";
+                fallStatus.innerText = "NO";
+                statusBox.innerText = "SIN CAÍDA";
             }
         });
     </script>
