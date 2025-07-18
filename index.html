@@ -6,12 +6,12 @@
     <title>Monitor de Caídas</title>
     <style>
         :root {
-            --primary-color: #4CAF50; /* Cambia el color principal */
+            --primary-color: #4CAF50;
             --background-color: #F4F6F9;
             --card-background: #FFFFFF;
             --text-color: #333333;
             --shadow-color: rgba(0, 0, 0, 0.1);
-            --border-radius: 10px;
+            --border-radius: 12px;
         }
 
         body {
@@ -27,7 +27,7 @@
 
         .container {
             width: 90%;
-            max-width: 1200px;
+            max-width: 1000px;
             padding: 20px;
             text-align: center;
             box-shadow: 0 4px 12px var(--shadow-color);
@@ -41,57 +41,43 @@
             margin-bottom: 30px;
         }
 
-        .status-box {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 15px;
-            border-radius: var(--border-radius);
-            margin-bottom: 40px;
-            font-size: 18px;
+        .box-container {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
         }
 
-        .data-box {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .data-box div {
+        .box {
             background-color: #e7f5e7;
             padding: 20px;
             border-radius: var(--border-radius);
             box-shadow: 0 4px 6px var(--shadow-color);
-        }
-
-        .data-box div h4 {
-            font-size: 20px;
-            color: var(--text-color);
-        }
-
-        .data-box div p {
-            font-size: 16px;
-            color: var(--text-color);
-            margin-top: 10px;
-        }
-
-        .footer {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 10px;
+            width: 30%;
             font-size: 18px;
+            font-weight: bold;
+            color: var(--text-color);
+            text-align: center;
+        }
+
+        .status-box {
+            background-color: #FFDDC1;
+            color: #D9534F;
+            padding: 20px;
+            font-size: 22px;
+            font-weight: bold;
+            margin-bottom: 20px;
             border-radius: var(--border-radius);
         }
 
         @media (max-width: 768px) {
-            .data-box {
-                grid-template-columns: 1fr 1fr;
+            .box-container {
+                flex-direction: column;
+                align-items: center;
             }
-        }
 
-        @media (max-width: 480px) {
-            .data-box {
-                grid-template-columns: 1fr;
+            .box {
+                width: 80%;
+                margin-bottom: 20px;
             }
         }
     </style>
@@ -100,40 +86,31 @@
     <div class="container">
         <div class="title">Monitor de Caídas</div>
 
-        <div class="status-box" id="detected-color">
-            Estado de la Caída: SIN CAÍDA
+        <!-- Estado de la Caída -->
+        <div class="status-box" id="status-caida">
+            SIN CAÍDA
         </div>
 
-        <div class="data-box">
-            <div>
-                <h4>Accel X</h4>
-                <p id="Accel_X">0</p>
+        <!-- Aceleración, Rotación y Caída -->
+        <div class="box-container">
+            <div class="box">
+                <h3>Aceleración</h3>
+                <p id="Accel_X">X: 0</p>
+                <p id="Accel_Y">Y: 0</p>
+                <p id="Accel_Z">Z: 0</p>
             </div>
-            <div>
-                <h4>Accel Y</h4>
-                <p id="Accel_Y">0</p>
-            </div>
-            <div>
-                <h4>Accel Z</h4>
-                <p id="Accel_Z">0</p>
-            </div>
-            <div>
-                <h4>Gyro X</h4>
-                <p id="Gyro_X">0</p>
-            </div>
-            <div>
-                <h4>Gyro Y</h4>
-                <p id="Gyro_Y">0</p>
-            </div>
-            <div>
-                <h4>Gyro Z</h4>
-                <p id="Gyro_Z">0</p>
-            </div>
-        </div>
 
-        <div class="footer">
-            <p id="intensity-container">INTENSIDAD: 0</p>
-            <p id="lux">LUX: 0</p>
+            <div class="box">
+                <h3>Rotación</h3>
+                <p id="Gyro_X">X: 0</p>
+                <p id="Gyro_Y">Y: 0</p>
+                <p id="Gyro_Z">Z: 0</p>
+            </div>
+
+            <div class="box">
+                <h3>Caída Detectada</h3>
+                <p id="fall-status">NO</p>
+            </div>
         </div>
     </div>
 
@@ -155,7 +132,7 @@
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
 
-        // Actualizar valores dinámicamente con prefijo
+        // Función para actualizar valores dinámicamente
         function updateValue(refName, elementId, prefix = "") {
             const dataRef = database.ref(refName);
             dataRef.on('value', function(snapshot) {
@@ -165,25 +142,22 @@
         }
 
         // Actualizaciones de Aceleración y Giroscopio
-        updateValue("DISe/Accel_X_g", "Accel_X");
-        updateValue("DISe/Accel_Y_g", "Accel_Y");
-        updateValue("DISe/Accel_Z_g", "Accel_Z");
+        updateValue("DISe/Accel_X_g", "Accel_X", "X: ");
+        updateValue("DISe/Accel_Y_g", "Accel_Y", "Y: ");
+        updateValue("DISe/Accel_Z_g", "Accel_Z", "Z: ");
+        
+        updateValue("DISe/Gyro_X_dps", "Gyro_X", "X: ");
+        updateValue("DISe/Gyro_Y_dps", "Gyro_Y", "Y: ");
+        updateValue("DISe/Gyro_Z_dps", "Gyro_Z", "Z: ");
 
-        updateValue("DISe/Gyro_X_dps", "Gyro_X");
-        updateValue("DISe/Gyro_Y_dps", "Gyro_Y");
-        updateValue("DISe/Gyro_Z_dps", "Gyro_Z");
-
-        // Actualizar Estado de Caída, Intensidad y Lux
-        updateValue("DISe/CaidaDetectada", "detected-color", function(val) {
+        // Actualizar Estado de la Caída
+        updateValue("DISe/CaidaDetectada", "fall-status", function(val) {
             if(val) {
-                document.getElementById('detected-color').innerText = "CAÍDA DETECTADA";
+                document.getElementById('status-caida').innerText = "CAÍDA DETECTADA";
             } else {
-                document.getElementById('detected-color').innerText = "SIN CAÍDA";
+                document.getElementById('status-caida').innerText = "SIN CAÍDA";
             }
         });
-
-        updateValue("DISe/Gyro_X_dps", "intensity-container", "INTENSIDAD: ");
-        updateValue("DISe/Accel_X_g", "lux", "LUX: ");
     </script>
 </body>
 </html>
