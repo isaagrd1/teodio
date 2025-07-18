@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LFA Reader</title>
+    <title>Monitor de Caídas</title>
     <style>
-        
         :root {
             --red: #D53E49;
             --blue: #65A1B7;
@@ -43,7 +42,6 @@
             max-width: 600px;
         }
 
-        /* DETECTED COLOR BOX */
         .detected-color-container {
             background-color: #FFF;
             box-shadow: 0 4px 10px var(--shadow);
@@ -74,7 +72,6 @@
             font-weight: bold;
         }
 
-        /* DATA BOXES */
         .data-boxes {
             display: flex;
             justify-content: center;
@@ -109,7 +106,6 @@
             color: #333;
         }
 
-        /* COLORS */
         .red { background-color: var(--red); }
         .blue { background-color: var(--blue); }
         .green { background-color: var(--green); }
@@ -124,70 +120,20 @@
         .red-line { background-color: var(--red); }
         .blue-line { background-color: var(--blue); }
         .green-line { background-color: var(--green); }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            *{
-            margin: 0 10px;
-            }
-            .title {
-                font-size: 28px;
-                padding: 10px 20px;
-            }
-
-            #intensity-container {
-                font-size: 20px;
-            }
-
-            #lux {
-                font-size: 16px;
-            }
-
-            .box {
-                flex: 1 1 100%;
-                max-width: none;
-            }
-
-            .data-boxes {
-                gap: 20px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            *{
-            margin: 0 10px;
-            }
-            .title {
-                font-size: 24px;
-                padding: 10px 15px;
-            }
-
-            #intensity-container {
-                font-size: 18px;
-            }
-
-            #lux {
-                font-size: 14px;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="main-container">
-        <!-- Title -->
-        <div class="title">LFA Reader</div>
+        <div class="title">Monitor de Caídas</div>
 
-        <!-- Detected Color -->
         <div class="detected-color-container">
-            <div style="font-weight: bold; font-size: 20px;">DETECTED COLOR</div>
+            <div style="font-weight: bold; font-size: 20px;">Estado de la Caída</div>
             <div id="detected-color" style="font-size: 22px;">"INDEFINIDO"</div>
         </div>
 
-        <!-- Intensity -->
         <div id="intensity-container">INTENSIDAD: 0</div>
         <div id="lux">LUX: 0</div>
 
-        <!-- Data Boxes -->
         <div class="data-boxes">
             <div class="box">
                 <div class="box-circle red"></div>
@@ -216,74 +162,38 @@
     <script>
         // Configuración de Firebase
         const firebaseConfig = {
-        apiKey: "AIzaSyDb0MNZx7DZM_u9fz9VYad5EptkVdnK2YQ",
-        authDomain: "lfar-cb399.firebaseapp.com",
-        databaseURL: "https://lfar-cb399-default-rtdb.firebaseio.com",
-        projectId: "lfar-cb399",
-        storageBucket: "lfar-cb399.firebasestorage.app",
-        messagingSenderId: "140652099318",
-        appId: "1:140652099318:web:c1f4342562b05398e51ed7",
-        measurementId: "G-77T2SHFNPG"
-};
+            apiKey: "AIzaSyBC4eda_WiPSdAiC8S2rjhpm-1WLhewwYA",
+            authDomain: "dise-7e195.firebaseapp.com",
+            databaseURL: "https://dise-7e195-default-rtdb.firebaseio.com",
+            projectId: "dise-7e195",
+            storageBucket: "dise-7e195.firebasestorage.app",
+            messagingSenderId: "427238013547",
+            appId: "1:427238013547:web:efd0796f1deefd2bb0cf2e",
+            measurementId: "G-30G22Q5K91"
+        };
         firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
-    
+
         // Actualizar valores dinámicamente con prefijo
         function updateValue(refName, elementId, prefix = "") {
-            const dataRef = database.ref(`LFAR/${refName}`);
+            const dataRef = database.ref(refName);
             dataRef.on('value', function(snapshot) {
                 const value = snapshot.val();
                 document.getElementById(elementId).innerHTML = prefix + value;
             });
         }
-    
-        // Actualizaciones de Red, Azul, Verde
-        updateValue("Rojo", "Red");
-        updateValue("Azul", "Blue");
-        updateValue("Verde", "Green");
-    
-        // Actualizar Detected Color, Intensidad y Lux
-        const detectedColorRef = database.ref("LFAR/Color_detectado");
-        detectedColorRef.on('value', function(snapshot) {
-            const color = snapshot.val();
-            const detectedColorText = document.getElementById('detected-color');
-            const detectedColorContainer = document.querySelector('.detected-color-container');
-            const intensityContainer = document.getElementById('intensity-container');
-            const luxElement = document.getElementById('lux');
-    
-            // Actualizar el color detectado
-            detectedColorText.innerHTML = `"${color.toUpperCase()}"`;
-    
-            // Colores dinámicos según el valor detectado
-            if (color === 'Rojo') {
-                intensityContainer.style.backgroundColor = 'var(--red)';
-                luxElement.style.color = 'var(--red)';
-                detectedColorText.style.color = 'var(--red)';
-                detectedColorContainer.style.color = 'var(--red)'; // Color del título y contenido
-            } else if (color === 'Azul') {
-                intensityContainer.style.backgroundColor = 'var(--blue)';
-                luxElement.style.color = 'var(--blue)';
-                detectedColorText.style.color = 'var(--blue)';
-                detectedColorContainer.style.color = 'var(--blue)';
-            } else if (color === 'Verde') {
-                intensityContainer.style.backgroundColor = 'var(--green)';
-                luxElement.style.color = 'var(--green)';
-                detectedColorText.style.color = 'var(--green)';
-                detectedColorContainer.style.color = 'var(--green)';
-            } else {
-                // Color indefinido: gris oscuro
-                intensityContainer.style.backgroundColor = '#555'; // Fondo gris oscuro
-                luxElement.style.color = '#555'; // Texto gris oscuro
-                detectedColorText.style.color = '#555'; // Texto gris oscuro
-                detectedColorContainer.style.color = '#555'; // Toda la sección en gris oscuro
-            }
+
+        // Actualizaciones de Aceleración y Giroscopio
+        updateValue("DISe/Accel_X_g", "Red");
+        updateValue("DISe/Accel_Y_g", "Green");
+        updateValue("DISe/Accel_Z_g", "Blue");
+
+        // Actualizar Estado de Caída, Intensidad y Lux
+        updateValue("DISe/CaidaDetectada", "detected-color", function(val) {
+            return val ? `"CAÍDA DETECTADA"` : `"SIN CAÍDA"`;
         });
-    
-        updateValue("Lux", "lux", "LUX: ");
-        updateValue("Intensidad", "intensity-container", "INTENSIDAD: ");
+        updateValue("DISe/Gyro_X_dps", "intensity-container", "INTENSIDAD: ");
+        updateValue("DISe/Accel_X_g", "lux", "LUX: ");
     </script>
-    
-    
-    
 </body>
 </html>
